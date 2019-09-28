@@ -15,8 +15,22 @@ function customVue(options = {}) {
 			}
 		})
 	}
+	initComputed.call(this);
+
 	new Compile(options.el, this)
 }
+
+function initComputed() {
+	let vm = this;
+	let computed = this.$options.computed;
+	Object.keys(computed).forEach(function(key) {
+		Object.defineProperty(vm, key, {
+			get: typeof computed[key] === 'function' ? computed[key] : computed[key].get,
+			set() {}
+		})
+	})
+}
+
 
 // 数据劫持
 function Observe(data) {
@@ -74,6 +88,26 @@ function Compile(el, vm) {
 				})
 				node.textContent = text.replace(/\{\{(.*)\}\}/, val)
 			}
+			if (node.nodeType === 1) {
+				let nodeAttrs = node.attributes;
+				Array.from(nodeAttrs).forEach(function(attr) {
+					console.log(attr.name)
+					let name = attr.name
+					let exp = attr.value
+					if (name.indexOf('v-') == 0) {
+						node.value = vm[exp]
+					}
+					new Watcher(vm, exp, function(newVal) {
+						node.value = newVal;
+					})
+
+					node.addEventListener('input', function(e) {
+						let newVal = e.target.value;
+						vm[exp] = newVal;
+					})
+				})
+			}
+
 			if (node.childNodes) {
 				replace(node)
 			}
