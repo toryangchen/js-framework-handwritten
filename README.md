@@ -1,6 +1,6 @@
 # 简易版js框架实现
 
-* [ ] Vue MVVM
+* [x] Vue MVVM
 * [ ] Promise
 * [ ] 继承
 * [ ] 防抖节流函数
