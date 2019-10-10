@@ -60,14 +60,14 @@ class Promise {
 			}
 		}
 
-
 		// 实现链式调用，且改变了后面then方法的值，必须通过新的实例
 		let promise2 = new Promise((resolve, reject) => {
 			if (this.state === Promise.FULFILLED) {
 				setTimeout(() => {
 					try {
 						const x = onFulfilled(this.value)
-						resolve(x)
+						Promise.resolvePromise(promise2, x, resolve, reject)
+						// resolve(x)
 					} catch (e) {
 						reject(e)
 					}
@@ -78,7 +78,8 @@ class Promise {
 				setTimeout(() => {
 					try {
 						const x = onRejected(this.reason)
-						resolve(x)
+						Promise.resolvePromise(promise2, x, resolve, reject)
+						// resolve(x)
 					} catch (e) {
 						reject(e)
 					}
@@ -91,7 +92,8 @@ class Promise {
 					setTimeout(() => {
 						try {
 							const x = onFulfilled(this.value)
-							resolve(x)
+							Promise.resolvePromise(promise2, x, resolve, reject)
+							// resolve(x)
 						} catch (e) {
 							reject(e)
 						}
@@ -102,7 +104,8 @@ class Promise {
 					setTimeout(() => {
 						try {
 							const x = onRejected(this.reason)
-							resolve(x)
+							Promise.resolvePromise(promise2, x, resolve, reject)
+							// resolve(x)
 						} catch (e) {
 							reject(e)
 						}
@@ -117,5 +120,54 @@ class Promise {
 Promise.PENDING = 'pending';
 Promise.FULFILLED = 'fulfilled';
 Promise.REJECTED = 'rejected';
+Promise.resolvePromise = function(promise2, x, resolve, reject) {
+	if (promise2 === x) {
+		reject(new TypeError("Chaining cycle detected for promise"))
+	}
+
+	let called = false;
+	if (x instanceof Promise) {
+		x.then(value => {
+			// resolve(value)
+			Promise.resolvePromise(promise2, value, resolve, reject)
+		}, reason => {
+			reject(reason)
+		})
+	} else if (x !== null && (typeof x === "object" || typeof x === 'function')) {
+		try {
+			const then = x.then;
+			if (typeof then === 'function') {
+				then.call(x, value => {
+					if (called) return;
+					called = true;
+					Promise.resolvePromise(promise2, value, resolve, reject);
+				}, reason => {
+					if (called) return;
+					called = true;
+					reject(reason);
+				})
+			} else {
+				if (called) return;
+				called = true;
+				resolve(x);
+			}
+		} catch (e) {
+			if (called) return;
+			called = true;
+			reject(e);
+		}
+	} else {
+		resolve(x);
+	}
+}
+
+Promise.defer = Promise.deferred = function() {
+	let dfd = {}
+	dfd.promise = new Promise((resolve, reject) => {
+		dfd.resolve = resolve;
+		dfd.reject = reject;
+	});
+	return dfd;
+}
 
 module.exports = Promise;

@@ -5,8 +5,12 @@ new Promise((resolve, rejected) => {
 	})
 	.then(
 		value => {
-			throw new Error('hhahah')
-			return 'toryang' + value
+			// throw new Error('hhahah')
+			return new Promise(resolve => {
+				resolve(new Promise((resolve, reject) => {
+					resolve('333')
+				}));
+			})
 		},
 		reason => {
 			console.log('reason', reason)
