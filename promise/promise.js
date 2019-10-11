@@ -116,6 +116,35 @@ class Promise {
 		return promise2
 	}
 
+	race(promises) {
+		return new promise((resolve, reject) => {
+			for (let i = 0; i < promises.length; i++) {
+				promises[i].then(resolve, reject)
+			}
+		})
+	}
+
+	all(promises) {
+		let array = [];
+		let i = 0;
+
+		function processData(index, data) {
+			arr[index] = data;
+			i++;
+			if (i == promises.length) {
+				resolve(arr);
+			};
+		};
+
+		return new Promise((resolve, reject) => {
+			for (let i = 0; i < promises.length; i++) {
+				promises[i].then(data => {
+					processData(i, data);
+				}, reject)
+			}
+		})
+	}
+
 }
 Promise.PENDING = 'pending';
 Promise.FULFILLED = 'fulfilled';
