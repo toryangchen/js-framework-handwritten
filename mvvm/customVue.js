@@ -1,9 +1,15 @@
+/**
+ * 这是自定义Vue的入口：
+ * options就是Vue实例中的一些正常传参：
+ * 如 data，computed，生命周期钩子函数，methods等
+ */
 function customVue(options = {}) {
 	this.$options = options
 	var data = this._data = this.$options.data
 	observe(data)
 
-	// 这里将data 数据挂载到this实例上
+	// 数据原本是挂载到 this._data上；
+	// 这里将data数据挂载添加到this实例上
 	for (let key in data) {
 		Object.defineProperty(this, key, {
 			enumerable: true,
@@ -20,6 +26,9 @@ function customVue(options = {}) {
 	new Compile(options.el, this)
 }
 
+/**
+ * 该方法实现了Computed方法，
+ */
 function initComputed() {
 	let vm = this;
 	let computed = this.$options.computed;
@@ -32,7 +41,12 @@ function initComputed() {
 }
 
 
-// 数据劫持
+/**
+ * 数据劫持
+ * 1. 使用Object.defineProperty方法重写数据的set和get方法；
+ * 2. 数据的get方法注入依赖收集器；
+ * 3. set方法观察数据变更；
+ */
 function Observe(data) {
 	let dep = new Dep();
 	for (let key in data) {
@@ -63,7 +77,9 @@ function observe(data) {
 	return new Observe(data);
 }
 
-
+/**
+ * 操作DOM，用来模拟页面试图的刷新
+ */
 function Compile(el, vm) {
 	vm.$el = document.querySelector(el);
 	let fragment = document.createDocumentFragment();
@@ -117,7 +133,11 @@ function Compile(el, vm) {
 	vm.$el.appendChild(fragment);
 }
 
-// 发布订阅模式，观察数据是否改变
+
+/**
+ * 发布订阅，观察数据是否改变
+ * 主要在数据的set方法添加观察方法；
+ */
 function Dep() {
 	this.subs = [];
 }
