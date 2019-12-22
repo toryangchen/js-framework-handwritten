@@ -1,3 +1,4 @@
+// 组合函数的一种
 function pipe(...args) {
   return subArgs => {
     return args.reduce((acc, func, index) => {
@@ -5,3 +6,5 @@ function pipe(...args) {
     }, subArgs);
   };
 }
+
+//https://segmentfault.com/a/1190000015102804
