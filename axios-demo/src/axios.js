@@ -11,7 +11,7 @@ class Axios {
   constructor() {
     this.interceptors = {
       request: new Interceptor(),
-      response: new Interceptor()
+      response: new Interceptor(),
     };
 
     let _this = this;
@@ -32,12 +32,12 @@ class Axios {
               typeof args[1] == "object" &&
                 args[1] &&
                 args[1].constructor == Object,
-              "args[1] must is JSON"
+              "args[1] must is JSON",
             );
 
             options = {
               ...args[1],
-              url: args[0]
+              url: args[0],
             };
 
             return _this.request(options);
@@ -45,7 +45,7 @@ class Axios {
             assert(false, "invaild args");
           }
         }
-      }
+      },
     });
   }
 
@@ -57,7 +57,7 @@ class Axios {
     } else if (args.length == 1 && args[0].constructor == Object) {
       options = {
         ...args[0],
-        method
+        method,
       };
       this.request(options);
     } else {
@@ -127,7 +127,7 @@ class Axios {
         xhr => {
           let err = createError(xhr);
           reject(err);
-        }
+        },
       );
     });
   }
@@ -142,12 +142,12 @@ class Axios {
           typeof args[1] == "object" &&
             args[1] &&
             args[1].constructor == Object,
-          "args[1] must is JSON"
+          "args[1] must is JSON",
         );
         options = {
           ...args[1],
           url: args[0],
-          method: "get"
+          method: "get",
         };
         this.request(options);
       } else {
@@ -163,7 +163,7 @@ class Axios {
         options = {
           url: args[0],
           data: args[1],
-          method: "post"
+          method: "post",
         };
         this.request(options);
       } else if (args.length === 3) {
@@ -172,14 +172,14 @@ class Axios {
           typeof args[2] == "object" &&
             args[2] &&
             args[2].constructor == Object,
-          "args[2] must is JSON"
+          "args[2] must is JSON",
         );
 
         options = {
           ...args[2],
           url: args[0],
           data: args[1],
-          method: "post"
+          method: "post",
         };
 
         this.request(options);
@@ -194,13 +194,13 @@ class Axios {
       assert(typeof args[0] == "string", "args[0] must is String");
       assert(
         typeof args[1] == "object" && args[1] && args[1].constructor == Object,
-        "args[1] must is JSON"
+        "args[1] must is JSON",
       );
 
       options = {
         ...args[1],
         url: args[0],
-        method: "get"
+        method: "get",
       };
       this.request(options);
     }
