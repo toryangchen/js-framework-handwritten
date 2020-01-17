@@ -7,5 +7,6 @@
 * [x] 发布订阅模式 && 观察者模式 `./simulate-function/events`
 * [x] call && apply && bind && new && instanceOf 实现 `./simulate-function`
 * [x] 防抖、节流函数
+* [x] 实现`axios`网络请求库
 
 
